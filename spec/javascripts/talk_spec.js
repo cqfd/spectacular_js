@@ -24,15 +24,20 @@ describe("How does property lookup work in Javascript?", function() {
 
   it("and so on, up the prototype chain", function() {
     var obj = {};
+
     var a = {};
-    var b = {};
-    var c = {};
     a.alligator = "alligator";
+
+    var b = {};
     b.bicycle = "bicycle";
+
+    var c = {};
     c.cat = "cat";
+
     obj.__proto__ = a;
     a.__proto__ = b;
     b.__proto__ = c;
+
     expect(obj.alligator).toBe(a.alligator);
     expect(obj.bicycle).toBe(b.bicycle);
     expect(a.bicycle).toBe(b.bicycle);
@@ -247,6 +252,47 @@ describe("_.extend", function() {
 });
 
 describe("How does function context work in Javascript?", function() {
+  it("if a function is called with an explicit reciever, 'this' is set to be the reciever", function() {
+    var a = {};
+    var b = {};
+    var f = function() {
+      return this;
+    };
+    a.f = f;
+    b.f = f;
+    expect(a.f()).toBe(a);
+    expect(b.f()).toBe(b);
+    expect(a.f()).not.toBe(b);
+  });
+
+  it("otherwise, 'this' defaults to the global object", function() {
+    var f = function() {
+      return this;
+    };
+    expect(f()).toBe(window);
+  });
+
+  it("you can use Function.prototype.call to manually set a function's context", function() {
+    var a = {};
+    var b = {};
+    var f = function() {
+      return this;
+    };
+    expect(f.call(a)).toBe(a);
+    expect(f.call(b)).toBe(b);
+    expect(f.call(null)).toBe(window);
+  });
+
+  it("you can also use Function.prototype.apply to manually set a function's context", function() {
+    var a = {};
+    var b = {};
+    var f = function() {
+      return this;
+    };
+    expect(f.apply(a)).toBe(a);
+    expect(f.apply(b)).toBe(b);
+    expect(f.apply(null)).toBe(window);
+  });
 });
 
 describe("How does Underscore's bind function work?", function() {
