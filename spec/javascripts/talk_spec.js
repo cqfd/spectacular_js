@@ -92,7 +92,7 @@ describe("What do constructor functions do?", function() {
     });
     it("they implicitly return an object", function() {
       var f = new Foo;
-      expect(f).toBeTruthy();
+      expect(f).toBeTruthy(); // even though Foo doesn't return anything
     });
 
     it("any properties you hang on 'this' inside the function will be own properties", function() {
