@@ -1,0 +1,9 @@
+{
+  "name" : "A Spectacular Guide to Javascript",
+  "description": "Learning Javascript with Jasmine",
+  "sections": [
+    {"section":"intro"},
+    {"section":"properties"},
+    {"section":"functions"}
+  ]
+}
