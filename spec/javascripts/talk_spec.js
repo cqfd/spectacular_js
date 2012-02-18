@@ -297,3 +297,74 @@ describe("How does function context work in Javascript?", function() {
 
 describe("How does Underscore's bind function work?", function() {
 });
+
+describe("Lexical scoping", function() {
+    describe("A funny for-loop bug", function() {
+        it("capturing loop variables ordinarily works the way you'd expect", function() {
+            var xs = [];
+            for (var i = 0; i < 3; i++) {
+                xs.push(i);
+            }
+            expect(xs[0]).toBe(0);
+            expect(xs[1]).toBe(1);
+            expect(xs[2]).toBe(2);
+        });
+        it("but it doesn't work the way you'd expect inside of functions", function() {
+            var fs = [];
+            for (var i = 0; i < 3; i++) {
+                fs.push(function() {
+                    return i;
+                });
+            }
+            expect(fs[0]()).toBe(3);
+            expect(fs[1]()).toBe(3);
+            expect(fs[2]()).toBe(3);
+        });
+
+        it("evaluating a function evaluates the body anew each time", function() {
+            var i = 0;
+            var f = function() { return i; };
+            expect(f()).toBe(i);
+            i = {foo: "bar"};
+            expect(f()).toBe(i);
+        });
+
+        it("variables inside the body of the function are lexically scoped", function() {
+            var f = (function() {
+                var i = 0;
+                return function() {
+                    return i;
+                };
+            }());
+            expect(f()).toBe(0);
+            var i = {foo: "bar"};
+            expect(f()).toBe(0);
+        });
+
+        it("lexical scope is not the same as dynamic scope", function() {
+            var g = function() {
+                return i;
+            };
+            (function() {
+                var i = 0;
+                expect(g).toThrow("i is not defined");
+            }());
+        });
+
+        it("arguments to a function go into a new, lexically-closer frame of variable bindings", function() {
+            var f = (function() {
+                var i = 0;
+                return function(i) {
+                    return i;
+                };
+            }());
+            var x = 0;
+            expect(f(x)).toBe(x);
+            x = {foo: "bar"};
+            expect(f(x)).toBe(x);
+        });
+    });
+});
+
+describe("Hoisting", function() {
+});
